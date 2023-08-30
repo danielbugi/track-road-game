@@ -1,12 +1,12 @@
-const KEY_LEFT_ARROW = 37;
 const KEY_UP_ARROW = 38;
 const KEY_RIGHT_ARROW = 39;
 const KEY_DOWN_ARROW = 40;
+const KEY_LEFT_ARROW = 37;
 
-let keyHeld_Gas = false;
-let keyHeld_Reverse = false;
-let keyHeld_TurnLeft = false;
-let keyHeld_TurnRight = false;
+const KEY_W = 87;
+const KEY_D = 68;
+const KEY_S = 83;
+const KEY_A = 65;
 
 let mouseX = 0;
 let mouseY = 0;
@@ -16,6 +16,14 @@ const setupInput = () => {
 
   document.addEventListener('keydown', keyPressed);
   document.addEventListener('keyup', keyReleased);
+
+  blueCar.setUpInput(
+    KEY_UP_ARROW,
+    KEY_RIGHT_ARROW,
+    KEY_DOWN_ARROW,
+    KEY_LEFT_ARROW
+  );
+  greenCar.setUpInput(KEY_W, KEY_D, KEY_S, KEY_A);
 };
 
 const updateMousePos = (e) => {
@@ -32,40 +40,35 @@ const updateMousePos = (e) => {
   // carSpeedY = -4;
 };
 
-const keyPressed = (e) => {
-  console.log('key pressed:' + e.keyCode);
-  if (e.keyCode == KEY_LEFT_ARROW) {
-    keyHeld_TurnLeft = true;
+const keySet = (keyEvent, whichCar, setTo) => {
+  if (keyEvent.keyCode == whichCar.controlKeyKeyLeft) {
+    whichCar.keyHeld_TurnLeft = setTo;
     // carAng -= 0.5;
   }
-  if (e.keyCode == KEY_RIGHT_ARROW) {
-    keyHeld_TurnRight = true;
+  if (keyEvent.keyCode == whichCar.controlKeyRight) {
+    whichCar.keyHeld_TurnRight = setTo;
     // carAng += 0.5;
   }
-  if (e.keyCode == KEY_UP_ARROW) {
-    keyHeld_Gas = true;
-    carSpeed += 0.5;
+  if (keyEvent.keyCode == whichCar.controlKeyUp) {
+    whichCar.keyHeld_Gas = setTo;
+    this.speed += 0.5;
   }
-  if (e.keyCode == KEY_DOWN_ARROW) {
-    keyHeld_Reverse = true;
-    carSpeed -= 0.5;
+  if (keyEvent.keyCode == whichCar.controlKeyDown) {
+    whichCar.keyHeld_Reverse = setTo;
+    this.speed -= 0.5;
   }
-
-  e.preventDefault();
 };
 
-const keyReleased = (e) => {
+const keyPressed = (evt) => {
+  console.log('key pressed:' + evt.keyCode);
+  keySet(evt, greenCar, true);
+  keySet(evt, blueCar, true);
+  evt.preventDefault();
+};
+
+const keyReleased = (evt) => {
   // console.log('key released:' + e.keyCode);
-  if (e.keyCode == KEY_LEFT_ARROW) {
-    keyHeld_TurnLeft = false;
-  }
-  if (e.keyCode == KEY_RIGHT_ARROW) {
-    keyHeld_TurnRight = false;
-  }
-  if (e.keyCode == KEY_UP_ARROW) {
-    keyHeld_Gas = false;
-  }
-  if (e.keyCode == KEY_DOWN_ARROW) {
-    keyHeld_Reverse = false;
-  }
+  keySet(evt, greenCar, false);
+  keySet(evt, blueCar, false);
+  evt.preventDefault();
 };
